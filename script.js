@@ -1,6 +1,59 @@
+// ===== Typing effect on the home page =====
+
+var typed = document.getElementById('typed');
+
+if (
+    typed &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+) {
+    var roles = [
+        'Information Systems Instructor',
+        'IT Support Specialist',
+        'Freelance Computer Technician'
+    ];
+
+    var r = 0;
+    var i = 0;
+    var deleting = false;
+
+    (function tick() {
+        var word = roles[r];
+
+        i += deleting ? -1 : 1;
+
+        typed.textContent = word.slice(0, i);
+
+        var delay = deleting ? 35 : 80;
+
+        if (!deleting && i === word.length) {
+            deleting = true;
+            delay = 1600;
+        } 
+        else if (deleting && i === 0) {
+            deleting = false;
+            r = (r + 1) % roles.length;
+            delay = 400;
+        }
+
+        setTimeout(tick, delay);
+    })();
+}
+
+
+// ===== Hide social icons that don't have a real link yet =====
+
+Array.prototype.forEach.call(
+    document.querySelectorAll('.social a[href="#"]'),
+    function (a) {
+        a.hidden = true;
+    }
+);
+
+
 // ===== Certificates: loaded from certs.json =====
 
 var certBox = document.getElementById('cert-list');
+
 
 // Only allow files that live inside the certs/ folder
 function safePath(p) {
@@ -8,6 +61,8 @@ function safePath(p) {
         /^certs\/[A-Za-z0-9._-]+$/.test(p);
 }
 
+
+// Show message
 function showMessage(text) {
     if (!certBox) return;
 
@@ -20,7 +75,10 @@ function showMessage(text) {
     certBox.appendChild(p);
 }
 
+
+// Display certificates
 function showCerts(items) {
+
     if (!certBox) return;
 
     if (!Array.isArray(items) || !items.length) {
@@ -32,31 +90,45 @@ function showCerts(items) {
 
     items.forEach(function (c) {
 
+        // Validate certificate paths
         if (!safePath(c.file) || (c.thumb && !safePath(c.thumb))) {
+
             console.warn(
                 'Certificate skipped because the file path is invalid:',
                 c.file
             );
+
             return;
         }
 
+
+        // Certificate card
         var card = document.createElement('div');
         card.className = 'cert-card';
 
+
+        // Certificate link
         var a = document.createElement('a');
+
         a.href = c.file;
         a.target = '_blank';
         a.rel = 'noopener';
 
+
+        // PDF certificate
         if (c.type === 'pdf' && !c.thumb) {
 
             var pdf = document.createElement('div');
+
             pdf.className = 'pdf';
             pdf.textContent = '📄';
 
             a.appendChild(pdf);
 
-        } else {
+        }
+
+        // Image certificate
+        else {
 
             var img = document.createElement('img');
 
@@ -67,11 +139,16 @@ function showCerts(items) {
             a.appendChild(img);
         }
 
+
+        // Certificate information
         var meta = document.createElement('div');
         meta.className = 'meta';
 
+
         var b = document.createElement('b');
+
         b.textContent = c.title || 'Certificate';
+
 
         var s = document.createElement('span');
 
@@ -79,16 +156,20 @@ function showCerts(items) {
             .filter(Boolean)
             .join(' · ');
 
+
         meta.appendChild(b);
         meta.appendChild(s);
 
         a.appendChild(meta);
+
         card.appendChild(a);
 
         certBox.appendChild(card);
     });
 }
 
+
+// Load certificates
 if (certBox) {
 
     fetch('certs.json?v=3')
@@ -100,13 +181,18 @@ if (certBox) {
 
             return res.json();
         })
+
         .then(showCerts)
+
         .catch(function (error) {
 
-            console.error('Certificate loading error:', error);
+            console.error(
+                'Certificate loading error:',
+                error
+            );
 
             showMessage(
-                'Cert\ificates could not be loaded right now.'
+                'Certificates could not be loaded right now.'
             );
         });
 }
