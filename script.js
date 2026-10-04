@@ -2,10 +2,8 @@
 
 var typed = document.getElementById('typed');
 
-if (
-    typed &&
-    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-) {
+if (typed) {
+
     var roles = [
         'Information Systems Instructor',
         'IT Support Specialist',
@@ -17,6 +15,7 @@ if (
     var deleting = false;
 
     (function tick() {
+
         var word = roles[r];
 
         i += deleting ? -1 : 1;
@@ -26,21 +25,25 @@ if (
         var delay = deleting ? 35 : 80;
 
         if (!deleting && i === word.length) {
+
             deleting = true;
             delay = 1600;
-        } 
-        else if (deleting && i === 0) {
+
+        } else if (deleting && i === 0) {
+
             deleting = false;
             r = (r + 1) % roles.length;
             delay = 400;
+
         }
 
         setTimeout(tick, delay);
+
     })();
 }
 
 
-// ===== Hide social icons that don't have a real link yet =====
+// ===== Hide social icons that don't have a real link =====
 
 Array.prototype.forEach.call(
     document.querySelectorAll('.social a[href="#"]'),
@@ -55,34 +58,44 @@ Array.prototype.forEach.call(
 var certBox = document.getElementById('cert-list');
 
 
-// Only allow files that live inside the certs/ folder
+// ===== Validate certificate file path =====
+
 function safePath(p) {
+
     return typeof p === 'string' &&
         /^certs\/[A-Za-z0-9._-]+$/.test(p);
+
 }
 
 
-// Show message
+// ===== Show certificate message =====
+
 function showMessage(text) {
+
     if (!certBox) return;
 
     certBox.textContent = '';
 
     var p = document.createElement('p');
+
     p.className = 'note';
     p.textContent = text;
 
     certBox.appendChild(p);
+
 }
 
 
-// Display certificates
+// ===== Display certificates =====
+
 function showCerts(items) {
 
     if (!certBox) return;
 
     if (!Array.isArray(items) || !items.length) {
+
         showMessage('No certificates yet.');
+
         return;
     }
 
@@ -91,7 +104,11 @@ function showCerts(items) {
     items.forEach(function (c) {
 
         // Validate certificate paths
-        if (!safePath(c.file) || (c.thumb && !safePath(c.thumb))) {
+
+        if (
+            !safePath(c.file) ||
+            (c.thumb && !safePath(c.thumb))
+        ) {
 
             console.warn(
                 'Certificate skipped because the file path is invalid:',
@@ -102,12 +119,15 @@ function showCerts(items) {
         }
 
 
-        // Certificate card
+        // Create certificate card
+
         var card = document.createElement('div');
+
         card.className = 'cert-card';
 
 
-        // Certificate link
+        // Create certificate link
+
         var a = document.createElement('a');
 
         a.href = c.file;
@@ -116,6 +136,7 @@ function showCerts(items) {
 
 
         // PDF certificate
+
         if (c.type === 'pdf' && !c.thumb) {
 
             var pdf = document.createElement('div');
@@ -127,7 +148,9 @@ function showCerts(items) {
 
         }
 
+
         // Image certificate
+
         else {
 
             var img = document.createElement('img');
@@ -137,11 +160,14 @@ function showCerts(items) {
             img.loading = 'lazy';
 
             a.appendChild(img);
+
         }
 
 
         // Certificate information
+
         var meta = document.createElement('div');
+
         meta.className = 'meta';
 
 
@@ -165,21 +191,30 @@ function showCerts(items) {
         card.appendChild(a);
 
         certBox.appendChild(card);
+
     });
+
 }
 
 
-// Load certificates
+// ===== Load certificates from certs.json =====
+
 if (certBox) {
 
-    fetch('certs.json?v=3')
+    fetch('certs.json?v=5')
+
         .then(function (res) {
 
             if (!res.ok) {
-                throw new Error('HTTP ' + res.status);
+
+                throw new Error(
+                    'HTTP ' + res.status
+                );
+
             }
 
             return res.json();
+
         })
 
         .then(showCerts)
@@ -194,5 +229,7 @@ if (certBox) {
             showMessage(
                 'Certificates could not be loaded right now.'
             );
+
         });
+
 }
