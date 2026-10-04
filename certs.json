@@ -1,0 +1,19 @@
+[
+    {
+        "id": "ncii-epas.pdf",
+        "file": "certs/ncii-epas.pdf",
+        "thumb": "certs/ncii-epas-thumb.jpg",
+        "type": "pdf",
+        "title": "National Certificate II – Electronic Products Assembly and Servicing",
+        "issuer": "TESDA",
+        "year": "2026"
+    },
+    {
+        "id": "1382e4498e06d9ea.jpg",
+        "file": "certs/1382e4498e06d9ea.jpg",
+        "type": "image",
+        "title": "Google IT Support Certificate Professional",
+        "issuer": "Google",
+        "year": "2025"
+    }
+]
