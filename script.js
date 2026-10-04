@@ -25,16 +25,13 @@ if (typed) {
         var delay = deleting ? 35 : 80;
 
         if (!deleting && i === word.length) {
-
             deleting = true;
             delay = 1600;
-
-        } else if (deleting && i === 0) {
-
+        } 
+        else if (deleting && i === 0) {
             deleting = false;
             r = (r + 1) % roles.length;
             delay = 400;
-
         }
 
         setTimeout(tick, delay);
@@ -53,22 +50,14 @@ Array.prototype.forEach.call(
 );
 
 
-// ===== Certificates: loaded from certs.json =====
+// ===== Certificates =====
 
 var certBox = document.getElementById('cert-list');
 
-
-// ===== Validate certificate file path =====
-
 function safePath(p) {
-
     return typeof p === 'string' &&
         /^certs\/[A-Za-z0-9._-]+$/.test(p);
-
 }
-
-
-// ===== Show certificate message =====
 
 function showMessage(text) {
 
@@ -82,20 +71,14 @@ function showMessage(text) {
     p.textContent = text;
 
     certBox.appendChild(p);
-
 }
-
-
-// ===== Display certificates =====
 
 function showCerts(items) {
 
     if (!certBox) return;
 
     if (!Array.isArray(items) || !items.length) {
-
         showMessage('No certificates yet.');
-
         return;
     }
 
@@ -103,39 +86,26 @@ function showCerts(items) {
 
     items.forEach(function (c) {
 
-        // Validate certificate paths
-
         if (
             !safePath(c.file) ||
             (c.thumb && !safePath(c.thumb))
         ) {
-
             console.warn(
                 'Certificate skipped because the file path is invalid:',
                 c.file
             );
-
             return;
         }
-
-
-        // Create certificate card
 
         var card = document.createElement('div');
 
         card.className = 'cert-card';
-
-
-        // Create certificate link
 
         var a = document.createElement('a');
 
         a.href = c.file;
         a.target = '_blank';
         a.rel = 'noopener';
-
-
-        // PDF certificate
 
         if (c.type === 'pdf' && !c.thumb) {
 
@@ -146,12 +116,7 @@ function showCerts(items) {
 
             a.appendChild(pdf);
 
-        }
-
-
-        // Image certificate
-
-        else {
+        } else {
 
             var img = document.createElement('img');
 
@@ -160,28 +125,21 @@ function showCerts(items) {
             img.loading = 'lazy';
 
             a.appendChild(img);
-
         }
-
-
-        // Certificate information
 
         var meta = document.createElement('div');
 
         meta.className = 'meta';
 
-
         var b = document.createElement('b');
 
         b.textContent = c.title || 'Certificate';
-
 
         var s = document.createElement('span');
 
         s.textContent = [c.issuer, c.year]
             .filter(Boolean)
             .join(' · ');
-
 
         meta.appendChild(b);
         meta.appendChild(s);
@@ -191,13 +149,9 @@ function showCerts(items) {
         card.appendChild(a);
 
         certBox.appendChild(card);
-
     });
-
 }
 
-
-// ===== Load certificates from certs.json =====
 
 if (certBox) {
 
@@ -206,11 +160,7 @@ if (certBox) {
         .then(function (res) {
 
             if (!res.ok) {
-
-                throw new Error(
-                    'HTTP ' + res.status
-                );
-
+                throw new Error('HTTP ' + res.status);
             }
 
             return res.json();
@@ -231,5 +181,4 @@ if (certBox) {
             );
 
         });
-
 }
